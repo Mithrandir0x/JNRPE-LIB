@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     08/30/07 16:11:08                                                        
+
+     JNRPE
+     
+     This software aims to be a JAVA replacement for the NRPE server
+     addon for the NAGIOS platform.
+     
+     Massimiliano Ziccardi                                                                
+     ====================================================================== -->
+<project name="jnrpe" default="help" basedir=".">
+
+  <!-- PROPERTY DEFINITION SECTION -->
+  <property name="server-version" value="1.05.3" />
+  <property name="plugin-version" value="0.6.4" />
+  <property name="server-src" location="src"/>
+  <property name="plugins-src" location="plugins"/>
+  <property name="licenses-directory" location="LICENSES"/>
+  
+  <!-- ======================= -->
+  
+  <property name="build" location="build"/>
+  <property name="dist"  location="dist"/>
+  <property name="libs-directory"  location="libs"/>
+
+  <!-- All jars inside the libs directory must be in the classpath -->
+  <path id="classpath">
+    <fileset dir="libs">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+ <!-- ================================= 
+          target: compile-server
+      ================================= -->
+  <target name="compile-server" description="Builds the server">
+    <ant dir="${server-src}" target="compile"/>
+  </target>
+
+  <target name="make-server-jar" description="Jars the server" depends="compile-server">
+    <ant dir="${server-src}" target="jar"/>
+  </target>
+
+  <target name="compile-plugins" depends="compile-server">
+    <ant dir="${plugins-src}" target="compile"/>
+  </target>
+
+  <target name="make-plugins-jar" depends="compile-server,compile-plugins">
+    <ant dir="${plugins-src}" target="jar"/>
+  </target>
+
+  <target name="make-server-dist-bin" depends="make-server-jar,win32-service">
+    <ant dir="${server-src}" target="dist-bin"/>
+  </target>
+
+  <target name="make-plugins-dist-bin" depends="make-plugins-jar">
+    <ant dir="${plugins-src}" target="dist-bin"/>
+  </target>
+
+  <target name="dist-bin" depends="make-server-dist-bin,make-plugins-dist-bin"/>
+
+
+  <target name="win32-service" description="Jars the server" depends="make-server-jar,make-plugins-jar">
+    <ant dir="win32" target="win32-service"/>
+  </target>
+
+  <target name="make-win32-install" description="Jars the server" depends="win32-service">
+    <ant dir="win32" target="dist-win32-install"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+
+  <target name="dist-src" >
+    <chmod file="./install.sh" perm="u+rx"/>
+    <mkdir dir="${dist}/archive"/>
+    <tar destfile="${dist}/archive/jnrpe-${server-version}-src.tar.gz" compression="gzip" >
+      <tarfileset dir="${server-src}" prefix="jnrpe-${server-version}/src" preserveLeadingSlashes="true">
+        <include name="**/*.java"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.xsd"/>
+      </tarfileset>
+      <tarfileset dir="win32" prefix="jnrpe-${server-version}/win32" preserveLeadingSlashes="true">
+        <include name="**/*"/>
+      </tarfileset>
+      <tarfileset dir="${plugins-src}" prefix="jnrpe-${server-version}/plugins" preserveLeadingSlashes="true">
+        <include name="**/*"/>
+      </tarfileset>
+
+      <tarfileset dir="${libs-directory}" prefix="jnrpe-${server-version}/libs" preserveLeadingSlashes="true">
+        <include name="**/*.jar"/>
+      </tarfileset>
+
+      <tarfileset dir="./LICENSES/" prefix="jnrpe-${server-version}/LICENSES" preserveLeadingSlashes="true">
+        <include name="**/*"/>
+      </tarfileset>
+      
+      <tarfileset dir="." preserveLeadingSlashes="true" prefix="jnrpe-${server-version}">
+        <include name="README.TXT"/>
+        <include name="LICENSE"/>
+        <include name="AUTHORS"/>
+        <include name="NOTICE.TXT"/>
+        <include name="log4j.properties"/>
+        <include name="build.xml"/>
+        <include name="install.sh"/>
+      </tarfileset>
+      
+      <tarfileset dir="sample" preserveLeadingSlashes="true" prefix="jnrpe-${server-version}/sample">
+        <include name="*"/>
+      </tarfileset>
+
+      <tarfileset dir="certificates" preserveLeadingSlashes="true" prefix="jnrpe-${server-version}/certificates">
+        <include name="*"/>
+      </tarfileset>
+
+      <tarfileset dir="install" preserveLeadingSlashes="true" prefix="jnrpe-${server-version}/install">
+        <include name="*"/>
+      </tarfileset>
+
+    </tar>
+  </target>
+
+  <target name="make-all" depends="win32-service,make-server-jar,make-plugins-jar"/>
+	
+  <target name="help">
+    <echo level="info" message="ant [TASKNAME]"/>
+    <echo level="info" message="The following tasks are supported: "/>
+    <echo level="info" message="* make-all"/>
+    <echo level="info" message="     compiles everything and creates all the jars but the installation package"/>
+    <echo level="info" message="* compile-server"/>
+    <echo level="info" message="     compiles the server source and produced compiled output in the "/>
+    <echo level="info" message="     ${build}/server directory "/>
+    <echo level="info" message="* compile-plugins"/>
+    <echo level="info" message="     compiles the plugin package and produced compiled output in the "/>
+    <echo level="info" message="     ${build}/plugins directory "/>  	
+    <echo level="info" message="* win32-service"/>
+    <echo level="info" message="     compiles the win32 service package and produced compiled output in the "/>
+    <echo level="info" message="     ${build}/service directory "/>  	
+    <echo level="info" message="* make-server-jar"/>
+    <echo level="info" message="     produces  all the jars required to run the server in the "/>
+    <echo level="info" message="     ${dist}/server directory "/>
+    <echo level="info" message="* make-plugins-jar"/>
+    <echo level="info" message="     produces the jar of the plugin package in the ${dist}/plugins"/>
+    <echo level="info" message="     directory "/>
+    <echo level="info" message="* dist-bin"/>
+    <echo level="info" message="*    Builds the tgz files of all the jnrp packages in the ${dist}/archive"/>
+    <echo level="info" message="     directory "/>
+    <echo level="info" message="* dist-src"/>
+    <echo level="info" message="     Create the tar.gz distribution package in the ${dist}/archive directory."/>
+    <echo level="info" message="     The package will contain the sources and all the required libraries"/>  	
+    <echo level="info" message="     to build the server and the base plugins"/>
+    <echo level="info" message="* make-win32-install "/>
+    <echo level="info" message="     Launches the win32-service task (a task used to create classes "/>
+    <echo level="info" message="     needed to run as service) than launch the IzPack compiler to"/>
+    <echo level="info" message="     create an installation package."/>
+    <echo level="info" message="     The installation package will also install the server as a WIN32"/>
+    <echo level="info" message="     service called JNRPE Server"/>
+  	<echo level="info" message="     NOTICE: This task requires IzPack to be installed on your machine"/>
+    <echo level="info" message="     To launch this task, use a command like :"/>
+    <echo level="info" message="     ant -DIzPackHome=[PATH-TO-IZPACK] dist-win32-install"/>
+    <echo level="info" message="* clean "/>
+    <echo level="info" message="     Deletes all generated files "/>  	
+  </target>
+
+
+</project>

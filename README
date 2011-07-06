@@ -1,0 +1,141 @@
+                         
+                         	       JNRPE
+                         	
+What is it?
+-----------
+
+This implementation of NRPE Nagios Addon, wants to help who wants to write
+Nagios plugins with the JAVA programming language.
+
+It is compatible with the native check_nrpe plugin: you can issue, for example
+an :
+
+	./check_nrpe -t 20 -H 193.42.233.137 -c check_disk -a 'c:!70!80'
+	
+where the server on the 193.42.233.137 is JNRPE, and you'll get (hopefully)
+exactly what you want.
+
+
+The Latest Version
+------------------
+
+You can always get the latest version at the following link:
+
+    http://sourceforge.net/project/showfiles.php?group_id=204486
+
+
+Installation
+------------
+
+The easiest way to compile the software is using the ant utility (http://ant.apache.org/).
+From here on, I'll assume you are using ant and you have already ant up and running.
+
+Put yourself in the directory where you have deflated jnrpe and type:
+	ant
+and press enter.
+
+You'll find the compiled jar in the dist/lib directory, toghether with some utility.
+
+If ant says your build is ok, do :
+	
+	cd dist/lib
+	java -jar jnrpe.jar
+	
+It should complain that you have to specify a configuration file.
+
+The configuration file, must be an XML like the following:
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jnrpe.sourceforge.net/jnrpeConfig.xsd">
+	<!-- Main server Configuration -->
+	<!-- param accepts-params is currently not used -->
+	<server accepts-params="true">
+		<!-- bind : says to the server wich address:port to bind 
+		    If you want to bind many address, repeat the tag for all the
+		    addresses you want to bind to.
+		    If you don't want SSL, set SSL to false.
+		    KeyStore is the file containing the keys to be used for SSL handshaking. JNRPE is bundled with a 
+		    default KeyStore, with password p@55w0rd. You'll find it under the 'certificates' directory. 
+		-->
+		<bind address="193.42.233.137:5666" SSL="true" KeyStore="PATH_TO/keys.jks" KeyStorePassword="p@55w0rd"/>
+		<!--
+		    allow : says which hosts are allowed to talk with this server
+		    You can repeat this tag, to allow many hosts
+		-->
+		<allow ip="195.75.144.81"/>
+		
+		<!--
+		    plugin: says which directory contains the plugins jars.
+		    You can specify as many directory as you want.
+		    The plugin directory will contain a directory for every plugin (each plugin, will have it's own directory and
+		    all the jars requested by the given plugin will be inside the same directory)
+		-->
+		<plugin path="/plugin"/>
+	</server>
+	<!-- Commands configuration section -->
+	<commands>
+		<!-- 
+			<command 			Is used to configure commands
+				name			The name of the command we are configuring
+				plugin_name		The plugin that will execute the command.
+								If you install the JNRPE_Plugins.jar, you'll have a plugin called EXEC. 
+								The EXEC plugin, execute classic Nagios Plugins.
+				params			Use this syntax only for unnamed parameters. For named parameters, use the <arg> tag.
+								The parameters we want to pass to the plugin.
+								For the EXEC plugin, the first parameter (/usr/local/nagios/check_disk) is the command we want to execute.
+								The other parameters are the parameters we want to pass to the executable.
+								Macros ($ARG?) are replaced with the parameters received from the check_nrpe plugin.
+			>
+				<arg
+					name		The name of the parameter to pass to the plugin (MANDATORY).
+								You can use both the short or the long form (for example you can use w or warning)
+					value		The value of the parameter.
+								If the accept-params is 'true', you can specify macros as value ($ARG1$, $ARG2$, ...)
+								This value is OPTIONAL, since some parameter do not requires values.
+				/>
+			</command>
+			
+			With this example configuration, you could execute the check_disk on a remote machine as you would do with
+			the classic NRPE server.
+			
+			<command name="check_disk" plugin_name="EXEC" params="/usr/local/nagios/check_disk -w $ARG1$ -c $ARG2$ $ARG3$"/>
+			For example:
+				./check_nrpe -H <jnrpeserver> -c ./check_disk -a '70!90!/'
+				
+			
+		--> 
+		<command name="test" plugin_name="TEST">
+			<arg name="text" value="$ARG1$"/>
+		</command>
+	</commands>
+</config>
+
+An example of configuration file can be found in the sample directory
+
+As soon as you have a correct configuration file, you can run:
+
+	java -jar jnrpe.jar -c /path/to/your/conf.xml
+
+Now your server is up and running. 
+You can check it is working, using the NRPE check_nrpe command this way:
+
+	check_nrpe -H your_bind_address
+
+Contacts
+--------
+
+     o If you want to be informed about new code releases, bug fixes,
+       security fixes, general news and information about the JNRPE
+       subscribe to the jnrpe-announce mailing list on
+       http://lists.sourceforge.net/lists/listinfo/jnrpe-announce
+
+     o If you want freely available support for using JNRPE please join the
+       jnrpe-users mailing list at
+       http://lists.sourceforge.net/lists/listinfo/jnrpe-users
+
+     o If you have a concrete bug report for JNRPE please go to the
+       JNRPE sourceforge page and submit your report:
+       http://sourceforge.net/projects/jnrpe/
+
+     o If you want to participate in actively developing JNRPE please
+       subscribe to the jnrpe-devel mailing list on
+       http://lists.sourceforge.net/lists/listinfo/jnrpe-devel

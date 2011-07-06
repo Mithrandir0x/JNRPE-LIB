@@ -1,0 +1,77 @@
+2009-08-20 JNRPE 1.0.5.3 has been released
+	* Added new plugin CHECK_JMX, based on JMXQUERY (http://code.google.com/p/jmxquery/)
+
+2009-08-04 JNRPE 1.0.5.2 has been released
+    * Fixed BUG #2814844
+    * New Feature #2382789 to allow hostnames instead of IP address in the binding 
+      configuration
+      
+2008-08-28 JNRPE 1.05 has been released
+    * Added ThreadTimeoutWatcher : a new object that kills threads than requested too
+      much time to serve the check_nrpe request
+    * Added the new <threadFactory> child of the <bind> tag in the configuration file.
+      Now it's possible to specify thread timeout, to kill hanged threads.
+      
+2008-02-04 JNRPE 1.0 beta has been released
+    * Added SSL Support
+    * Many bugfixes
+    * Updated the CHANGELOG
+    * Fixed a bug in the dist-src ant task
+
+2007-10-02 JNRPE 0.7.1 beta has been released
+    * Fixed an installation bug that prevented the installation to work if installation
+      path contained spaces
+    * Added the jnrpe_service.jar in the installation package
+
+2007-09-28 JNRPE 0.7 beta has been released
+    * Changed the plugin interface
+    * Better log messages
+    * Bug fixes
+
+2007-09-24 JNRPE 0.6.1alpha has been released
+    * Fixed a bug that prevented the log4j.properties to be parsed
+    * Fixed a bug in the digester xml configuration that prevented the server to work
+
+2007-09-21 JNRPE 0.6alpha has been released
+    * Added the ability to be installed as WIN32 service
+    * Added installation package
+    * Added an utility to understand if a value falls into a range
+    * Changed log levels
+    
+2007-09-10 JNRPE 0.5alpha has been released
+    * Switched code compatibility from JDK 1.6 to JDK 1.4+
+    * Better error handling in Plugin Factory configuration
+    * Better error messages
+    * Added the description TAG in the plugin XML parsing
+    * Better HELP message for the plugins
+    * Added schema files (look in xsd directory)
+    * Changed attributes in command line definition:
+       - opt became shortName
+       - longOpt became longName
+
+2007-09-07 JNRPE 0.4alpha has been released
+    * Fixed a bug in the CReturnValue class (return code was always 0);
+    * Added a new getInstance(String sXMLFilePath) to the CPluginFactory class.
+      The method can be used to test your own plugin as if it would be inside the
+      JNRPE server.
+	  
+2007-09-05 JNRPE 0.3alpha has been released
+    * The server is now able to print the list of installed plugin and is able
+      to write the help about every plugin.
+    * Plugins parameters are now specified in the plugin.xml file and validated
+      through commons-cli apis.
+    * Improved the plugin factory.
+    * Now the plugin factory uses a different classloader for each plugin.
+    * Using the commons-logging API to log events.
+    * Added an utility to configure commons-cli via XML
+    * Added commons-cli to the classpath
+	
+2007-09-03 
+    * Implemented a feature that allows the activation-deactivation
+      of the macro expansion
+	
+2007-08-31 JNRPE 0.2alpha has been released
+    * The server is now able to expand $ARGn$ macros.
+
+2007-08-31 JNRPE_PLUGINS 0.1b has been released
+    * EXEC plugin has been created to allow the execution of classic (executable) plugins. 

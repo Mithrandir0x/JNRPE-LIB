@@ -1,0 +1,46 @@
+   =========================================================================
+   ==  NOTICE file corresponding to section 4(d) of the Apache License,   ==
+   ==  Version 2.0, in this case for the JNRPE distribution.              ==
+   =========================================================================
+
+   This product includes software developed by
+   The Apache Software Foundation (http://www.apache.org/).
+
+   The binary distribution package (ie. jars, samples and documentation) of
+   this product includes software developed by the following:
+       
+     - The Apache Software Foundation (http://www.apache.org/)
+         - Commons Digester - see LICENSES/commons-digester.license.txt
+         - Commons BeanUtils - see LICENSES/commons-beanutils.license.txt
+         - Commons Logging - see LICENSES/commons-logging.license.txt
+         - Commons Collections - see LICENSES/commons-collections.license.txt
+         - Commons CLI - see LICENSES/commons-cli.license.txt
+         - log4j - see LICENSES/log4j.license.txt
+         - Xerces - see LICENSES/xercesImpl.license.txt and LICENSES/xml.apis.license.txt
+   The source distribution package (ie. all source and tools required to build
+   JNRPE) of this product includes software developed by the following:
+       
+     - The Apache Software Foundation (http://www.apache.org/)
+         - Commons Digester - see LICENSES/commons-digester.license.txt
+         - Commons BeanUtils - see LICENSES/commons-beanutils.license.txt
+         - Commons Logging - see LICENSES/commons-logging.license.txt
+         - Commons Collections - see LICENSES/commons-collections.license.txt
+         - Commons CLI - see LICENSES/commons-cli.license.txt
+         - log4j - see LICENSES/log4j.license.txt
+         - Xerces - see LICENSES/xercesImpl.license.txt and LICENSES/xml.apis.license.txt
+            
+   The installation distribution package contains software developed by:
+     
+     - The Apache Software Foundation (http://www.apache.org/)
+         - Commons Digester - see LICENSES/commons-digester.license.txt
+         - Commons BeanUtils - see LICENSES/commons-beanutils.license.txt
+         - Commons Logging - see LICENSES/commons-logging.license.txt
+         - Commons Collections - see LICENSES/commons-collections.license.txt
+         - Commons CLI - see LICENSES/commons-cli.license.txt
+         - log4j - see LICENSES/log4j.license.txt
+	 
+	 - Tanuki Software, Inc. (see http://wrapper.tanukisoftware.org/doc/english/authors.html)
+	     - Java Service Wrapper - see LICENSES/wrapper.license.txt
+	 
+	 - Julien PONGE julien.ponge@gmail.com (http://izpack.org/)
+	     - IzPack - see LICENSES/IzPack.license.txt

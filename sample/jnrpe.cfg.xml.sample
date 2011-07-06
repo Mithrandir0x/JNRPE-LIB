@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jnrpe.sourceforge.net/jnrpeConfig.xsd">
+	<!-- Main Server Configuration -->
+	<server accept-params="true">
+		<!-- The following configuration, will bind to
+		the 127.0.0.1 and will allow only local requests -->
+		<bind address="127.0.0.1:5666"/>
+		<allow ip="127.0.0.1"/>
+		
+		<!-- The directory where all plugins resides is ./plugins - inside this directory you'll 
+		have one directory for each plugin. -->
+		<plugin path="./plugins"/>
+	</server>
+	<commands>
+		<!-- 
+			<command 			Is used to configure commands
+				name			The name of the command we are configuring
+				plugin_name		The plugin that will execute the command.
+								If you install the JNRPE_Plugins.jar, you'll have a plugin called EXEC. 
+								The EXEC plugin, execute classic Nagios Plugins.
+				params			The parameters we want to pass to the plugin.
+								For the EXEC plugin, the first parameter (/usr/local/nagios/check_disk) is the command we want to execute.
+								The other parameters are the parameters we want to pass to the executable.
+								Macros ($ARG?) are replaced with the parameters received from the check_nrpe plugin.
+								
+			With this example configuration, you could execute the check_disk on a remote machine as you would do with
+			the classic NRPE server.
+			
+			For example:
+				./check_nrpe -n -H <jnrpeserver> -c ./check_disk -a '70!90!/'
+				
+			WARNING: never forget the -n parameter! This release of the server does not support SSL yet!
+		--> 
+		<command name="check_disk" plugin_name="EXEC" params="-e /usr/local/nagios/check_disk -a '-w $ARG1$ -c $ARG2$ $ARG3$'"/>
+		<!-- Here we configure a JAVA plugin.
+			 <command 			Is used to configure commands
+			 	name			The name of the command we are configuring
+			 	plugin_name		The plugin that will execute the command.
+								If you install the JNRPE_Plugins.jar, you'll have a plugin called TEST. 
+								The TEST plugin does nothing but return an OK state with a TEST OK message.
+				params			The parameters we want to pass to the plugin.
+								The TEST plugin has no parameters...
+								
+			With this example configuration, you could execute the check_disk on a remote machine as you would do with
+			the classic NRPE server.
+			
+			To invoke this command, you could do:
+				 ./check_nrpe -n -H <jnrpeserver> -c test'
+				 
+			WARNING: never forget the -n parameter! This release of the server does not support SSL yet!
+		--> 
+		<command name="test" plugin_name="TEST" params="--text $ARG1$"/>
+		
+	</commands>
+</config>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     08/30/07 16:11:08                                                        
+
+     JNRPE
+     
+     This software aims to be a JAVA replacement for the NRPE server
+     addon for the NAGIOS platform.
+     
+     Massimiliano Ziccardi                                                                
+     ====================================================================== -->
+<project name="jnrpe" default="compile" basedir=".">
+
+  <property name="dist-directory"  location="${dist}/server"/>
+  <property name="build-directory"  location="${build}/server"/>
+  
+  <!-- All jars inside the libs directory must be in the classpath -->
+  <path id="classpath">
+    <fileset dir="../libs">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  
+ <!-- ================================= 
+          target: compile
+      ================================= -->
+  <target name="compile" description="Builds the server">
+    <mkdir dir="${build-directory}"/>
+    <javac srcdir="${server-src}" destdir="${build-directory}" classpathref="classpath" target="1.4" source="1.4"/>
+
+    <copy todir="${build-directory}">
+      <fileset dir="${server-src}">
+        <include name="**/*.xml"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.xsd"/>
+        <exclude name="build.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- ================================= 
+	         target: jar              
+       ================================= -->
+  <target name="jar" depends="compile" description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist-directory}"/>
+    <mkdir dir="${dist-directory}/lib"/>
+    <!-- Put everything in ${build} into the jnrpe.jar file -->
+    <jar jarfile="${dist-directory}/jnrpe.jar" basedir="${build-directory}" excludes="log4j.properties">
+      <manifest>
+        <attribute name="Main-Class" value="it.jnrpe.server.CJNRPEServer"/>
+        <attribute name="Class-Path" value=". lib/log4j-1.2.15.jar lib/commons-beanutils.jar lib/commons-collections-3.2.jar lib/commons-digester-1.7.jar lib/commons-logging-1.1.jar lib/commons-cli-1.1.jar lib/xercesImpl.jar lib/xml-apis.jar"/>
+      </manifest>
+    </jar>
+    <copy todir="${dist-directory}" file="${server-src}/log4j.properties"/>
+    <copy todir="${dist-directory}/lib">
+      <fileset dir="../libs">
+        <include name="**/*.jar"/>
+      </fileset>
+    </copy>
+    <echo message="Executable JAR file has been created in ${dist-directory} directory"/>
+    <echo message="All required libraries have been copied in ${dist-directory}/lib directory" />
+  </target>
+
+  <target name="dist-bin" depends="jar">
+    <chmod file="../install.sh" perm="u+rx"/>
+    <mkdir dir="${dist}/archive"/>
+    <tar destfile="${dist}/archive/jnrpe-${server-version}-bin.tar.gz" compression="gzip" >
+
+      <tarfileset dir="${dist-directory}" prefix="jnrpe-${server-version}/bin" preserveLeadingSlashes="true">
+        <include name="**/*.jar"/>
+        <include name="**/*.properties"/>
+      </tarfileset>
+
+      <tarfileset dir="${licenses-directory}" prefix="jnrpe-${server-version}/LICENSES" preserveLeadingSlashes="true">
+        <include name="**/*"/>
+      </tarfileset>
+
+      <tarfileset dir="${server-src}/xsd" prefix="jnrpe-${server-version}/xsd" preserveLeadingSlashes="true">
+        <include name="**/*"/>
+      </tarfileset>
+
+      <tarfileset dir="${dist}/.." preserveLeadingSlashes="true" prefix="jnrpe-${server-version}">
+        <include name="README.TXT"/>
+        <include name="LICENSE"/>
+        <include name="AUTHORS"/>
+        <include name="NOTICE.TXT"/>
+        <include name="install.sh"/>
+      </tarfileset>
+    
+      <tarfileset dir="../sample" preserveLeadingSlashes="true" prefix="jnrpe-${server-version}/sample">
+         <include name="*"/>
+      </tarfileset>
+
+      <tarfileset dir="../certificates" preserveLeadingSlashes="true" prefix="jnrpe-${server-version}/certificates">
+        <include name="*"/>
+      </tarfileset>
+    </tar>
+  </target>
+
+
+
+</project>

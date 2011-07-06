@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     08/30/07 16:11:08                                                        
+
+     JNRPE
+     
+     This software aims to be a JAVA replacement for the NRPE server
+     addon for the NAGIOS platform.
+     
+     Massimiliano Ziccardi                                                                
+     ====================================================================== -->
+<project name="jnrpe" basedir=".">
+  
+  <property name="src" location="."/>
+  <property name="build-directory" location="${build}/plugins"/>
+  <property name="server-build-directory" location="${build}/server"/>
+  <property name="dist-directory"  location="${dist}/plugins"/>
+
+  
+  <!-- All jars inside the libs directory must be in the classpath -->
+  <path id="classpath">
+    <fileset dir="../libs">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="compile">
+    <mkdir dir="${build-directory}"/>
+    <javac srcdir="${src}" destdir="${build-directory}" target="1.4" source="1.4">
+      <classpath>
+        <pathelement path="${server-build-directory}"/>
+        <path refid="classpath"/>
+      </classpath>
+    </javac>
+    <copy todir="${build-directory}" file="plugin.xml" />
+  </target>
+  
+  <!-- ================================= 
+	         target: jar              
+       ================================= -->
+  <target name="jar" depends="compile" description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist-directory}"/>
+    <jar jarfile="${dist-directory}/jnrpe_plugins-${plugin-version}.jar" basedir="${build-directory}"/>
+  </target>  
+
+  <target name="dist-bin" depends="jar">
+    <mkdir dir="${dist}/archive"/>
+    <tar destfile="${dist}/archive/jnrpe_plugins-${plugin-version}-bin.tar.gz" compression="gzip" >
+      <tarfileset dir="${dist-directory}" prefix="jnrpe_plugins-${plugin-version}/bin" preserveLeadingSlashes="true">
+        <include name="jnrpe_plugins-${plugin-version}.jar"/>
+      </tarfileset>
+      <tarfileset dir="." preserveLeadingSlashes="true" prefix="jnrpe_plugins-${plugin-version}">
+        <include name="README.TXT"/>
+        <include name="LICENSE"/>
+        <include name="AUTHORS"/>
+      </tarfileset>
+    </tar>
+  </target>
+
+</project>

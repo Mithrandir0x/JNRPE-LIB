@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 U (http://www.altova.com) by i (Nop) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="config">
+		<xs:annotation>
+			<xs:documentation>JNRPE Configuration schema</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="server">
+					<xs:annotation>
+						<xs:documentation>Server Configuration Section</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="bind" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element
+											name="threadFactory" minOccurs="0" maxOccurs="1">
+                                            <xs:annotation>
+                                            	<xs:documentation>Defines the configuration parameters for the ThreadFactory
+to be used to create threads to serve requests received
+at the IP/PORT defined in the parent binding
+
+This tag is optional.
+Default is:
+	pool: not yet implemented
+	timeout: 5 seconds</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+												<xs:sequence>
+													<xs:choice>
+														<xs:element
+															name="pool" minOccurs="0" maxOccurs="0">
+                                                            <xs:annotation>
+                                                            	<xs:documentation>This is not yet implemented
+
+Defines the max size of the thread pool.
+If, for example, this binding receive 10 requests and
+the pool size is 7, 3 requests will wait until one thread
+is freed.</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:complexType>
+																<xs:attribute
+																	name="maxSize" use="optional">
+																	<xs:simpleType>
+																		<xs:restriction
+																			base="xs:int">
+																			<xs:whiteSpace
+																				value="collapse">
+																			</xs:whiteSpace>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:attribute>
+																<xs:attribute
+																	name="grow" type="xs:boolean" use="optional">
+																</xs:attribute>
+															</xs:complexType>
+														</xs:element>
+														<xs:element
+															name="timeout" minOccurs="1" maxOccurs="1">
+                                                            <xs:annotation>
+                                                            	<xs:documentation>Defines how much time a thread is allowed to run
+to serve e request before it gets killed</xs:documentation>
+                                                            </xs:annotation>
+                                                            <xs:complexType>
+																<xs:attribute
+																	name="value" use="required">
+																	<xs:simpleType>
+																		<xs:restriction
+																			base="xs:int">
+																			<xs:whiteSpace
+																				value="collapse">
+																			</xs:whiteSpace>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:attribute>
+																<xs:attribute
+																	name="unit" fixed="seconds">
+																	<xs:simpleType>
+																		<xs:restriction
+																			base="xs:string">
+																			<xs:whiteSpace
+																				value="collapse">
+																			</xs:whiteSpace>
+																			<xs:enumeration
+																				value="seconds">
+																			</xs:enumeration>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:attribute>
+															</xs:complexType>
+														</xs:element>
+													</xs:choice>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="address"
+										type="xs:string" use="required">
+										<xs:annotation>
+											<xs:documentation>
+												The IP:PORT address
+												where the server must
+												listen
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attributeGroup ref="SSL" />
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="allow" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>A list of IP allowed to talk with this server</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="ip" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element ref="plugin"/>
+						</xs:sequence>
+						<xs:attribute name="accept-params" type="xs:boolean" default="false">
+							<xs:annotation>
+								<xs:documentation>true if $ARGn$ macros must be expanded</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="commands" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Commands configuration section</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="command" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="command">
+		<xs:annotation>
+			<xs:documentation>Command definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence minOccurs="0">
+				<xs:element ref="arg" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="params" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						The parameters to pass to the plugin. Can
+						contain $ARG$ macros
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="plugin_name" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The name of the plugin that implements this
+						command
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="name" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The name of this command
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="plugin">
+		<xs:complexType>
+			<xs:attribute name="path" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>The directory where plugins are installed</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="arg">
+		<xs:complexType>
+			<xs:attribute name="name" use="required">
+				<xs:annotation>
+					<xs:documentation>The argumento name</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="value" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The argument value</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:attributeGroup name="SSL">
+		<xs:attribute name="SSL" type="xs:boolean" use="optional"/>
+		<xs:attribute name="KeyStore" type="xs:string" use="optional"/>
+		<xs:attribute name="KeyStorePassword" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+</xs:schema>

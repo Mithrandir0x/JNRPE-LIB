@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/home/ziccardi/workspace/CSTE1/JNRPE/src/xsd/config.xsd">
+	<!-- Main Server Configuration -->
+	<server accept-params="true">
+		<bind address="127.0.0.1:5666" SSL="false"/>
+		<allow ip="195.75.144.81"/>
+		<plugin path="/plugin"/>
+	</server>
+	<commands>
+		<command name="test" plugin_name="TEST" params="-t $ARG1$">
+		</command>
+		<command name="check_disk" plugin_name="EXEC" params="-e C:\PROGRA~2\nagios\check_pdm.exe -a '--disk --drive $ARG1$ -w $ARG2$ -c $ARG3$'"/>
+	</commands>
+</config>

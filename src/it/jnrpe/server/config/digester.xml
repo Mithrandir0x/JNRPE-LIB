@@ -1,0 +1,82 @@
+<digester-rules>
+  <pattern value="config">
+    <object-create-rule classname="it.jnrpe.server.config.CConfiguration"/>
+  </pattern>
+
+  <pattern value="config/server">
+  	<object-create-rule classname="it.jnrpe.server.config.CServerConfiguration"/>
+    <set-properties-rule>
+      <alias attr-name="accept-params" prop-name="acceptParams" />
+    </set-properties-rule>
+  	
+    <set-next-rule methodname="setServerConfiguration" />
+  </pattern>
+
+  <pattern value="config/server/bind">
+  	<object-create-rule classname="it.jnrpe.server.config.CBinding"/>
+    <set-properties-rule>
+      <alias attr-name="address" prop-name="address" />
+      <alias attr-name="SSL" prop-name="SSL" />
+      <alias attr-name="KeyStore" prop-name="keyStoreFile" />
+      <alias attr-name="KeyStorePassword" prop-name="keyStorePassword" />
+    </set-properties-rule>
+    <set-next-rule methodname="addBinding" />
+  </pattern>
+
+  <pattern value="config/server/bind/threadFactory">
+  	<object-create-rule classname="it.jnrpe.server.config.CThreadFactoryConfiguration"/>
+    <set-next-rule methodname="setThreadFactoryConfig" />
+  </pattern>
+
+  <pattern value="config/server/bind/threadFactory/timeout">
+  	<set-properties-rule>
+      <alias attr-name="value" prop-name="timeout" />
+      <alias attr-name="unit" prop-name="unit" />
+    </set-properties-rule>
+  </pattern>
+
+  <pattern value="config/server/allow">
+  	<object-create-rule classname="it.jnrpe.server.config.CHost"/>
+    <set-properties-rule>
+      <alias attr-name="IP" prop-name="IP" />
+    </set-properties-rule>
+    <set-next-rule methodname="addAcceptedHost" />
+  </pattern>
+
+  <pattern value="config/server/plugin">
+  	<object-create-rule classname="it.jnrpe.server.config.CPluginDir"/>
+    <set-properties-rule>
+      <alias attr-name="path" prop-name="path" />
+    </set-properties-rule>
+    <set-next-rule methodname="addPluginDir" />
+  </pattern>
+
+  <pattern value="config/commands">
+  	<object-create-rule classname="it.jnrpe.server.config.CCommands"/>
+  	<set-properties-rule>
+      <alias attr-name="timeout" prop-name="timeout" />
+    </set-properties-rule>
+    <set-next-rule methodname="setCommands" />
+  </pattern>
+
+  <pattern value="config/commands/command">
+  	<object-create-rule classname="it.jnrpe.server.config.CCommandDefinition"/>
+    <set-properties-rule>
+      <alias attr-name="name" prop-name="name" />
+      <alias attr-name="plugin_name" prop-name="pluginName" />
+      <alias attr-name="params" prop-name="args" />
+    </set-properties-rule>
+    <set-next-rule methodname="addCommandDefinition" />
+  </pattern>
+
+  <pattern value="config/commands/command/arg">
+  	<object-create-rule classname="it.jnrpe.server.config.CCommandArgument"/>
+    <set-properties-rule>
+      <alias attr-name="name" prop-name="name" />
+      <alias attr-name="value" prop-name="value" />
+    </set-properties-rule>
+    <set-next-rule methodname="addArgument" />
+  </pattern>
+
+ 
+</digester-rules>
